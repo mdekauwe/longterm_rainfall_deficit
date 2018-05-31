@@ -43,7 +43,7 @@ def main(odir, map, met_fname, deficit_period):
 
     expected /= float(nperiod_steps)
     expected = expected.astype(np.float32)
-    
+
     # drought index
     d = np.zeros((nyears-deficit_period,nmonths,nrows,ncols))
 
@@ -52,6 +52,7 @@ def main(odir, map, met_fname, deficit_period):
     i = step
     y = 0
     for year in range(st+deficit_period, en+1):
+        print(year)
         for m in range(12):
 
             # actual rainfall 3 years before month

@@ -32,6 +32,7 @@ def main(odir, map, met_fname, deficit_period):
     # drought index
     d = np.zeros((nyears-deficit_period,nmonths,nrows,ncols))
 
+    ar_sum = np.zeros((nrows, ncols))
     step = 12 * deficit_period
     i = step
     y = 0
@@ -40,12 +41,27 @@ def main(odir, map, met_fname, deficit_period):
         for m in range(12):
 
             # actual rainfall 3 years before month
-            actual_rainfall = ds["precip"][i-step:i,:,:].values.sum(axis=0)
+            #actual_rainfall = ds["precip"][i-step:i,:,:].values.sum(axis=0)
 
-            d[y,m,:,:] = (actual_rainfall - map) / map
+            # Loop over last N (deficit period) years, calculating summed
+            # monthly rainfall over the previous 12 months of each year
+            ar_sum = 0.0
+            stepx = int(step / deficit_period)
+            ii = i
+            for j in range(deficit_period):
+                #print(i-stepx, ii)
+
+                ar = ds["precip"][i-stepx:ii,:,:].values.sum(axis=0)
+                ar_sum += (ar - map) / map
+
+                ii = i-stepx
+                stepx += int(step/deficit_period)
+
+            d[y,m,:,:] = ar_sum
 
             i += 1
         y += 1
+
 
     ofile = open(os.path.join(odir, "drought_index.bin"), "w")
     d.tofile(ofile)

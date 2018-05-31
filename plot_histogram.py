@@ -86,12 +86,14 @@ def main():
 
     from matplotlib.ticker import MaxNLocator
     ax1.yaxis.set_major_locator(MaxNLocator(4))
-    ax2.xaxis.set_major_locator(MaxNLocator(4))
+    ax2.yaxis.set_major_locator(MaxNLocator(4))
+    ax1.xaxis.set_major_locator(MaxNLocator(3))
+    ax2.xaxis.set_major_locator(MaxNLocator(3))
     ax1.tick_params(direction='in', length=4)
     ax2.tick_params(direction='in', length=4)
 
     ax1.set_ylabel("Density")
-    ax1.set_xlabel("Foley's Index", position=(0.5, 1.5))
+    ax1.set_xlabel("Foley's Index", position=(1.0, 0.5))
 
     plt.setp(ax2.get_yticklabels(), visible=False)
 

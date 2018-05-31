@@ -30,11 +30,80 @@ def main():
     d = np.fromfile(fname, dtype=np.float64).reshape(nyears, nmonths,
                                                        nrows, ncols)
 
+    fname = os.path.join(odir, "map.bin")
+    map = np.fromfile(fname, dtype=np.float32).reshape(nrows, ncols)
+
+
+    aus = d[:,:,200:280,220:320]
+    aus_map = map[200:280,220:320]
+
+    #print(aus.shape)
+
+    aus_rows = 80
+    aus_cols = 100
+    wet_size = len(aus_map[aus_map>500])
+
+    aus = aus.reshape(nyears*nmonths, aus_rows, aus_cols)
+    foley_wet_d = np.zeros((nyears*nmonths,wet_size))
+    for i in range(nyears*nmonths):
+        slice = aus[i,:,:]
+        foley_wet_d[i,:] = slice[aus_map>500]
+
+    foley_wet_d = foley_wet_d.reshape(nyears*nmonths*wet_size)
+
+
+    dry_size = len(aus_map[aus_map<500])
+    foley_dry_d = np.zeros((nyears*nmonths,dry_size))
+
+    for i in range(nyears*nmonths):
+        slice = aus[i,:,:]
+        foley_dry_d[i,:] = slice[aus_map<500]
+
+    foley_dry_d = foley_dry_d.reshape(nyears*nmonths*dry_size)
+
+
+    width = 10
+    height = 5
+    fig = plt.figure(figsize=(width, height))
+    fig.subplots_adjust(hspace=0.05)
+    fig.subplots_adjust(wspace=0.05)
+    plt.rcParams['text.usetex'] = False
+    plt.rcParams['font.family'] = "sans-serif"
+    plt.rcParams['font.sans-serif'] = "Helvetica"
+    plt.rcParams['axes.labelsize'] = 14
+    plt.rcParams['font.size'] = 14
+    plt.rcParams['legend.fontsize'] = 10
+    plt.rcParams['xtick.labelsize'] = 14
+    plt.rcParams['ytick.labelsize'] = 14
+
+    ax1 = fig.add_subplot(111)
+
+    #foley_dry_d = foley_dry_d[~np.isnan(foley_dry_d)]
+    #foley_wet_d = foley_wet_d[~np.isnan(foley_wet_d)]
+    sns.distplot(foley_dry_d, ax=ax1,
+                 kde_kws={"label": "Dry (<500 mm y$^{-1}$)"})
+    sns.distplot(foley_wet_d, ax=ax1,
+                 kde_kws={"label": "Wet (>500 mm y$^{-1}$)"})
+    ax1.legend(numpoints=1, ncol=1, loc="best", frameon=False)
+    ax1.set_ylim(0, 1)
+
+    ax1.set_xlim(-3, 3)
+
+
+    from matplotlib.ticker import MaxNLocator
+    ax1.yaxis.set_major_locator(MaxNLocator(3))
+    ax1.xaxis.set_major_locator(MaxNLocator(3))
+    ax1.tick_params(direction='in', length=4)
+
+    ax1.set_ylabel("Density")
+    ax1.set_xlabel("Foley's Index")
+
+    plt.show()
+    sys.exit()
+
     d = d.reshape(nyears*nmonths, nrows, ncols)
     dmin = d.min(axis=0)
 
-    fname = os.path.join(odir, "map.bin")
-    map = np.fromfile(fname, dtype=np.float32).reshape(nrows, ncols)
 
     aus = dmin[200:280,220:320]
     aus_map = map[200:280,220:320]
@@ -44,6 +113,9 @@ def main():
     afr1_map = map[100:260,0:120]
     afr2_map = map[100:260,680:720]
     afr_map = np.hstack((afr2_map, afr1_map))
+
+    #aus = np.where(aus>-1.3, aus, np.nan)
+
 
     width = 10
     height = 5
@@ -85,8 +157,8 @@ def main():
     ax2.set_xlim(-4, 0)
 
     from matplotlib.ticker import MaxNLocator
-    ax1.yaxis.set_major_locator(MaxNLocator(4))
-    ax2.yaxis.set_major_locator(MaxNLocator(4))
+    ax1.yaxis.set_major_locator(MaxNLocator(3))
+    ax2.yaxis.set_major_locator(MaxNLocator(3))
     ax1.xaxis.set_major_locator(MaxNLocator(3))
     ax2.xaxis.set_major_locator(MaxNLocator(3))
     ax1.tick_params(direction='in', length=4)

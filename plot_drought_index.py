@@ -48,13 +48,13 @@ def main():
     afr2_map = map[100:260,680:720]
     afr_map = np.hstack((afr2_map, afr1_map))
 
-    plt.plot(afr_map, afr, "k.", alpha=0.1)
-    plt.plot(aus_map, aus, "r.", alpha=0.1)
+    #plt.plot(afr_map, afr, "k.", alpha=0.1)
+    #plt.plot(aus_map, aus, "r.", alpha=0.1)
     #plt.xlim(0, 2500)
-    plt.show()
-
-
-    plt.hist(aus)
+    #plt.show()
+    aus = np.where(aus>-1.3, aus, np.nan)
+    plt.imshow(aus, origin="upper")
+    plt.colorbar()
     plt.show()
     #dmin = np.where(dmin > -1.0, np.nan, dmin)
     #plt.imshow(dmin, origin="upper")

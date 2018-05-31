@@ -43,9 +43,7 @@ def main(odir, map, met_fname, deficit_period):
 
     expected /= float(nperiod_steps)
     expected = expected.astype(np.float32)
-    print(expected.shape)
-    sys.exit()
-
+    
     # drought index
     d = np.zeros((nyears-deficit_period,nmonths,nrows,ncols))
 

@@ -91,7 +91,7 @@ def main():
     ax2.tick_params(direction='in', length=4)
 
     ax1.set_ylabel("Density")
-    ax1.set_xlabel("Foley's Index", position=(0.5, 1.0))
+    ax1.set_xlabel("Foley's Index", position=(0.5, 1.5))
 
     plt.setp(ax2.get_yticklabels(), visible=False)
 

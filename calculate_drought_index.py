@@ -5,6 +5,12 @@
 Calculate long-term drought index following:
 
 Fensham et al. (2009) Global Change Biology, 15, 380-387.
+
+Which is actually based on:
+
+Foley JC (1957) Droughts in Australia. Review of records from earliest years of
+settlement to 1955. Bulletin No. 47, Bureau of Meteorology, Commonwealth of
+Australia, Melbourne.
 """
 
 __author__ = "Martin De Kauwe"
@@ -28,21 +34,6 @@ def main(odir, map, met_fname, deficit_period):
     en = int(ds["time"][-1].values.astype(str)[:4])
     nyears = (en - st) + 1
     nmonths = 12
-
-    # calculate expected long-term average rainfall for the deficit period
-    expected = np.zeros((nrows,ncols))
-
-    nperiod_steps = 0
-    step = 12 * deficit_period
-    i = 0
-    for year in range(st, en+1, deficit_period):
-        expected += ds["precip"][i:i+step,:,:].values.sum(axis=0)
-
-        i += 12 * deficit_period
-        nperiod_steps += 1
-
-    expected /= float(nperiod_steps)
-    expected = expected.astype(np.float32)
 
     # drought index
     d = np.zeros((nyears-deficit_period,nmonths,nrows,ncols))

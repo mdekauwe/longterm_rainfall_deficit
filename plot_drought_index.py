@@ -33,6 +33,14 @@ def main():
     d = d.reshape(nyears*nmonths, nrows, ncols)
     dmin = d.min(axis=0)
 
+    fname = os.path.join(odir, "map.bin")
+    map = np.fromfile(fname, dtype=np.float32).reshape(nrows, ncols)
+
+    plt.plot(map, dmin, "k.", alpha=0.1)
+    plt.xlim(0, 2500)
+    plt.show()
+
+
     dmin = np.where(dmin > -1.0, np.nan, dmin)
     plt.imshow(dmin, origin="upper")
     plt.colorbar()

@@ -2,7 +2,7 @@
 # coding: utf-8
 
 """
-Calculate long-term drought index following:
+Calculate long-term drought index standardised by the MAP following:
 
 Fensham et al. (2009) Global Change Biology, 15, 380-387.
 

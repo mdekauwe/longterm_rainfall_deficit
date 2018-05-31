@@ -75,7 +75,7 @@ def main():
             transform=ax1.transAxes, fontsize=12, verticalalignment='top',
             bbox=props)
     fig_label = "%s" % ("Africa")
-    ax2.text(0.02, 0.95, fig_label,
+    ax2.text(0.04, 0.95, fig_label,
             transform=ax2.transAxes, fontsize=12, verticalalignment='top',
             bbox=props)
 

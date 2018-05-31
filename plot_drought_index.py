@@ -33,7 +33,7 @@ def main():
     d = d.reshape(nyears*nmonths, nrows, ncols)
     dmin = d.min(axis=0)
 
-    dmin = np.where(dmin > 0.0, np.nan, dmin)
+    dmin = np.where(dmin > -1.0, np.nan, dmin)
     plt.imshow(dmin, origin="upper")
     plt.colorbar()
     plt.show()

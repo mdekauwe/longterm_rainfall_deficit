@@ -29,6 +29,23 @@ def main(odir, map, met_fname, deficit_period):
     nyears = (en - st) + 1
     nmonths = 12
 
+    # calculate expected long-term average rainfall for the deficit period
+    expected = np.zeros((nrows,ncols))
+
+    nperiod_steps = 0
+    step = 12 * deficit_period
+    i = 0
+    for year in range(st, en+1, deficit_period):
+        expected += ds["precip"][i:i+step,:,:].values.sum(axis=0)
+
+        i += 12 * deficit_period
+        nperiod_steps += 1
+
+    expected /= float(nperiod_steps)
+    expected = expected.astype(np.float32)
+    print(expected.shape)
+    sys.exit()
+
     # drought index
     d = np.zeros((nyears-deficit_period,nmonths,nrows,ncols))
 
@@ -37,7 +54,6 @@ def main(odir, map, met_fname, deficit_period):
     i = step
     y = 0
     for year in range(st+deficit_period, en+1):
-        print(year)
         for m in range(12):
 
             # actual rainfall 3 years before month
@@ -52,7 +68,7 @@ def main(odir, map, met_fname, deficit_period):
                 #print(i-stepx, ii)
 
                 ar = ds["precip"][i-stepx:ii,:,:].values.sum(axis=0)
-                ar_sum += (ar - map) / map
+                ar_sum += (ar - expected) / map
 
                 ii = i-stepx
                 stepx += int(step/deficit_period)

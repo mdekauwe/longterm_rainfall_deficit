@@ -45,7 +45,7 @@ def main(fname, odir):
 
     ofile = open(os.path.join(odir, "map.bin"), "w")
     map.tofile(ofile)
-
+    
 
 if __name__ == "__main__":
 

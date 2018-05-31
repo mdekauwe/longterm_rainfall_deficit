@@ -53,6 +53,9 @@ def main():
     #plt.xlim(0, 2500)
     plt.show()
 
+
+    plt.hist(aus)
+    plt.show()
     #dmin = np.where(dmin > -1.0, np.nan, dmin)
     #plt.imshow(dmin, origin="upper")
     #plt.colorbar()

@@ -38,33 +38,23 @@ def main(odir, map, met_fname, deficit_period):
     # drought index
     foley_d = np.zeros((nyears-deficit_period,nmonths,nrows,ncols))
 
-    amy_sum = np.zeros((nrows, ncols))
-    step = 12 * deficit_period
-    i = step
+    # rainfall in month, year in a given year
+    dmy = np.zeros((nyears-1,nmonths,nrows,ncols))
+
     y = 0
-    for year in range(st+deficit_period, en+1):
-        print(year)
+    i = nmonths
+    for year in range(st+1, en+1):
         for m in range(12):
-
-            # Loop over last N (deficit period) years, calculating summed
-            # monthly rainfall over the previous 12 months of each year
-            amy_sum = 0.0
-            stepx = int(step / deficit_period)
-            ii = i
-            for j in range(deficit_period):
-
-                # summed monthly rainfall over the previous 12 months of the yr
-                amy = ds["precip"][i-stepx:ii,:,:].values.sum(axis=0)
-                amy_sum += (amy - map) / map
-
-                ii = i-stepx
-                stepx += int(step/deficit_period)
-
-            foley_d[y,m,:,:] = amy_sum
-
-            i += 1
+            dmy[y,m,:,:] += (ds["precip"][i-m,:,:] - map) / map
         y += 1
+        i += nmonths
 
+    y = deficit_period
+    for year in range(st+deficit_period, en+1):
+        for m in range(12):
+            print(year, y-deficit_period, y, m)
+            foley_d[y-deficit_period,m,:,:] = dmy[y-deficit_period:y,m,:,:].sum(axis=0)
+        y += 1
 
     ofile = open(os.path.join(odir, "drought_index.bin"), "w")
     foley_d.tofile(ofile)
